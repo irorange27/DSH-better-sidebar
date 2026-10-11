@@ -145,6 +145,7 @@ export const ru: Record<string, string> = {
   terminalUnavailable: 'Хост не предоставляет терминал',
   terminalGone: 'Этот терминал больше не существует — создайте новый',
   terminalNew: 'Новый терминал',
+  terminalCapped: 'Достигнут лимит терминалов на сессию у хоста — сначала закройте неиспользуемые',
   preview: 'Предпросмотр',
   toc: 'Оглавление',
   edit: 'Изменить',

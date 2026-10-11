@@ -142,6 +142,7 @@ export const fr: Record<string, string> = {
   terminalUnavailable: 'L’hôte ne fournit pas de terminal',
   terminalGone: 'Ce terminal n’existe plus — vous pouvez en créer un',
   terminalNew: 'Nouveau terminal',
+  terminalCapped: 'La limite de terminaux par session de l’hôte est atteinte — fermez d’abord les terminaux inutilisés',
   preview: 'Aperçu',
   toc: 'Sommaire',
   edit: 'Modifier',

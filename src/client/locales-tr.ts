@@ -149,6 +149,7 @@ export const tr: Record<string, string> = {
   terminalUnavailable: 'Ana makine terminal desteği sunmuyor',
   terminalGone: 'Bu terminal artık yok — yeni bir tane oluşturun',
   terminalNew: 'Yeni terminal',
+  terminalCapped: 'Ana makinenin oturum başına terminal sınırına ulaşıldı — önce kullanılmayan terminalleri kapatın',
   preview: 'Önizleme',
   toc: 'İçindekiler',
   edit: 'Düzenle',

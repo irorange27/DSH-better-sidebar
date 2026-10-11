@@ -149,6 +149,7 @@ export const ja: Record<string, string> = {
   terminalUnavailable: 'ホストがターミナル機能を提供していません',
   terminalGone: 'そのターミナルは既に存在しません。新しく作成できます',
   terminalNew: '新しいターミナル',
+  terminalCapped: 'ホストのセッションあたりターミナル数上限に達しました。使わないターミナルを閉じてください',
   preview: 'プレビュー',
   toc: '目次',
   edit: '編集',

@@ -147,6 +147,7 @@ export const id: Record<string, string> = {
   terminalUnavailable: 'Host tidak menyediakan kemampuan terminal',
   terminalGone: 'Terminal itu sudah tidak ada — buat yang baru',
   terminalNew: 'Terminal baru',
+  terminalCapped: 'Batas terminal per sesi dari host telah tercapai — tutup terminal yang tidak dipakai dulu',
   preview: 'Pratinjau',
   toc: 'Daftar Isi',
   edit: 'Edit',

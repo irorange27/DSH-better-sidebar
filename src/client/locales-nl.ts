@@ -147,6 +147,7 @@ export const nl: Record<string, string> = {
   terminalUnavailable: 'De host biedt geen terminalmogelijkheid',
   terminalGone: 'Die terminal bestaat niet meer — maak een nieuwe aan',
   terminalNew: 'Nieuwe terminal',
+  terminalCapped: 'De terminallimiet per sessie van de host is bereikt — sluit eerst ongebruikte terminals',
   preview: 'Voorbeeld',
   toc: 'Inhoudsopgave',
   edit: 'Bewerken',

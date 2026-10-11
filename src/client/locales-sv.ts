@@ -132,6 +132,7 @@ export const sv: Record<string, string> = {
   terminalUnavailable: 'Värden tillhandahåller ingen terminal',
   terminalGone: 'Terminalen finns inte längre – skapa en ny',
   terminalNew: 'Ny terminal',
+  terminalCapped: 'Värdens gräns för terminaler per session är nådd – stäng oanvända terminaler först',
   preview: 'Förhandsgranska',
   toc: 'Innehållsförteckning',
   edit: 'Redigera',

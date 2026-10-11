@@ -149,6 +149,7 @@ export const th: Record<string, string> = {
   terminalUnavailable: 'โฮสต์ไม่ได้ให้ความสามารถเทอร์มินัล',
   terminalGone: 'เทอร์มินัลนั้นไม่มีอยู่แล้ว — สร้างใหม่ได้',
   terminalNew: 'เทอร์มินัลใหม่',
+  terminalCapped: 'ถึงขีดจำกัดจำนวนเทอร์มินัลต่อเซสชันของโฮสต์แล้ว — ปิดเทอร์มินัลที่ไม่ใช้ก่อน',
   preview: 'พรีวิว',
   toc: 'สารบัญ',
   edit: 'แก้ไข',

@@ -135,6 +135,7 @@ export const de: Record<string, string> = {
   terminalUnavailable: 'Der Host stellt keine Terminal-Funktion bereit',
   terminalGone: 'Dieses Terminal existiert nicht mehr – ein neues kann gestartet werden',
   terminalNew: 'Neues Terminal',
+  terminalCapped: 'Das Terminal-Limit des Hosts für diese Sitzung ist erreicht – zuerst ungenutzte Terminals schließen',
   preview: 'Vorschau',
   toc: 'Inhaltsverzeichnis',
   edit: 'Bearbeiten',

@@ -150,6 +150,7 @@ export const ar: Record<string, string> = {
   terminalUnavailable: 'المضيف لا يوفر إمكانية الطرفية',
   terminalGone: 'لم تعد هذه الطرفية موجودة — أنشئ واحدة جديدة',
   terminalNew: 'طرفية جديدة',
+  terminalCapped: 'تم بلوغ حد الأطراف لكل جلسة في المضيف — أغلق الأطراف غير المستخدمة أولاً',
   preview: 'معاينة',
   toc: 'الفهرس',
   edit: 'تحرير',

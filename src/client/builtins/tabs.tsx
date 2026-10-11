@@ -255,8 +255,17 @@ export function builtinTabs(ctx: Context): readonly TabDescriptor[] {
       // tab: the terminal is a secondary tool, but a visible menu row.
       order: 40,
       bottomOnly: true,
-      // One terminal per session workbench: reopening focuses the live tab.
-      single: true,
+      // Multi-instance: every open mints its own tab (unique id), and each
+      // tab derives its own host content identity (terminal-client.ts) — two
+      // tabs are two independent host terminals, and the id rides the
+      // persisted workbench tree so a reload re-adopts each tab's own shell.
+      createTab: () => ({
+        tab: {
+          id: `terminal-bottom:${crypto.randomUUID()}`,
+          type: 'terminal-bottom',
+          title: t('terminal'),
+        },
+      }),
       // The service is probed, never injected (it is absent on deployments
       // without the host terminal controller): a missing service shows a
       // disabled menu row instead of a terminal that cannot start.

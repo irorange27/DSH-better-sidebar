@@ -149,6 +149,7 @@ export const hi: Record<string, string> = {
   terminalUnavailable: 'होस्ट टर्मिनल क्षमता प्रदान नहीं करता',
   terminalGone: 'वह टर्मिनल अब मौजूद नहीं है — नया बनाएँ',
   terminalNew: 'नया टर्मिनल',
+  terminalCapped: 'होस्ट की प्रति-सत्र टर्मिनल सीमा पूरी हो गई है — पहले अप्रयुक्त टर्मिनल बंद करें',
   preview: 'पूर्वावलोकन',
   toc: 'विषय-सूची',
   edit: 'संपादित करें',

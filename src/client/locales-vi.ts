@@ -149,6 +149,7 @@ export const vi: Record<string, string> = {
   terminalUnavailable: 'Máy chủ không cung cấp khả năng terminal',
   terminalGone: 'Terminal đó không còn tồn tại — hãy tạo cái mới',
   terminalNew: 'Terminal mới',
+  terminalCapped: 'Đã đạt giới hạn số terminal mỗi phiên của máy chủ — hãy đóng các terminal không dùng trước',
   preview: 'Xem trước',
   toc: 'Mục lục',
   edit: 'Chỉnh sửa',

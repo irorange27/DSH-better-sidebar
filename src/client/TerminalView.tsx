@@ -27,10 +27,12 @@
  *   descriptor's `onClose` is the one place that does close it.
  * - The process identity is restored through the host's persisted
  *   `(sessionId, contentId) -> terminalId` binding, so the content identity
- *   must be STABLE across mounts ({@link bottomTerminalContentId}). "New
- *   terminal" deliberately mints a new one, because the old binding points at
- *   a process that is gone (host restart, terminal closed elsewhere) and
- *   reusing it would wedge the tab on `missingTerminal` forever.
+ *   must be STABLE across mounts — it rides the tab (its id plus the
+ *   generation in `meta`, {@link bottomTerminalContentId}), so two tabs are
+ *   two independent host terminals. "New terminal" deliberately mints a new
+ *   one, because the old binding points at a process that is gone (host
+ *   restart, terminal closed elsewhere) and reusing it would wedge the tab on
+ *   `missingTerminal` forever.
  * - `write` / `resize` go through the model (which serializes them and refuses
  *   them while the view is not writable), never straight to the remote —
  *   otherwise two windows' keystrokes would interleave.
@@ -50,7 +52,7 @@ import type { SidebarTab } from './state.ts'
 import { t } from './locales.ts'
 import { isDarkScheme, subscribeColorScheme } from './theme.ts'
 import {
-  bottomTerminalContentId, bottomTerminalKey, nextTerminalMeta, terminalRunOf, webTerminals,
+  bottomTerminalContentId, bottomTerminalInstance, bottomTerminalKey, nextTerminalMeta, terminalRunOf, webTerminals,
   type HostTerminalEnvironment, type HostTerminalView, type HostTerminalViewState,
 } from './terminal-client.ts'
 import css from './terminal.module.css'
@@ -74,12 +76,16 @@ export function TerminalBottomView({ ctx, scope, tab, visible }: TerminalBottomP
   // it keeps the tray row disabled and renders the explanation below.
   const service = useMemo(() => webTerminals(ctx), [ctx])
   const run = terminalRunOf(tab)
+  // The tab's own id scopes the identity (legacy single-instance tabs read as
+  // unscoped): two tabs are two independent host terminals, and a "new
+  // terminal" mint moves this tab's generation.
+  const instance = bottomTerminalInstance(tab)
   // `view()` allocates the terminal eagerly and memoizes one model per
   // (session, key) on the host side, so this memo must be the ONLY creation
   // path: a repeat `view()` for the same key is free, a new key is a new PTY.
   const model = useMemo(
-    () => service?.view(sessionId, bottomTerminalKey(run), bottomTerminalContentId(run)),
-    [service, sessionId, run],
+    () => service?.view(sessionId, bottomTerminalKey(run, instance), bottomTerminalContentId(run, instance)),
+    [service, sessionId, run, instance],
   )
   const state = useSyncExternalStore(
     useMemo(() => (callback: () => void) => model?.state.subscribe(callback) ?? (() => {}), [model]),
@@ -112,10 +118,13 @@ export function TerminalBottomView({ ctx, scope, tab, visible }: TerminalBottomP
 
   const missing = state.issue === 'missingTerminal'
   const ended = state.info?.state === 'exited' || state.phase === 'closed'
-  // The missing/ended panels carry their own message, so the pending-phase
-  // status line is only for a terminal that is still worth waiting on —
-  // without this gate a closed terminal would say "exited" twice.
-  const status = missing || ended ? undefined : statusOf(state)
+  // The host refused a new allocation (its per-session terminal limit): no
+  // retry helps, and "new terminal" would hit the same wall — a notice only.
+  const capped = state.issue === 'terminalLimit'
+  // The missing/ended/capped panels carry their own message, so the
+  // pending-phase status line is only for a terminal that is still worth
+  // waiting on — without this gate a closed terminal would say "exited" twice.
+  const status = missing || ended || capped ? undefined : statusOf(state)
 
   return (
     <section className={css.root} data-dsh-bottom-terminal data-terminal-state={state.phase}>
@@ -139,12 +148,12 @@ export function TerminalBottomView({ ctx, scope, tab, visible }: TerminalBottomP
           )}
         </div>
       )}
-      {(missing || ended) && (
+      {(missing || ended || capped) && (
         <div className={css.noticeBlock}>
           <p className={missing ? css.notice : css.status} role={missing ? 'alert' : 'status'}>
-            {missing ? t('terminalGone') : t('exited')}
+            {capped ? t('terminalCapped') : missing ? t('terminalGone') : t('exited')}
           </p>
-          <button type="button" className={css.action} onClick={newTerminal}>{t('terminalNew')}</button>
+          {!capped && <button type="button" className={css.action} onClick={newTerminal}>{t('terminalNew')}</button>}
         </div>
       )}
       {state.info !== undefined && !missing && (

@@ -164,6 +164,7 @@ export const zhMO: Record<string, string> = {
   terminalUnavailable: '宿主未提供終端能力',
   terminalGone: '該終端行程已不存在，可新建一個',
   terminalNew: '新增終端',
+  terminalCapped: '已達宿主的會話終端數量上限，請先關閉不用的終端',
   preview: '預覽',
   toc: '目錄',
   edit: '編輯',

@@ -159,22 +159,44 @@ export function webTerminals(ctx: Context): WebTerminalsFace | undefined {
 /** Namespace for the plugin's own occurrence key and content identity. */
 const TERMINAL_NS = 'dsh-better-sidebar:terminal-bottom'
 
+/**
+ * The tab id pre-multi-instance versions persisted for their ONE bottom
+ * terminal (the type id itself). Such a tab reads as unscoped and keeps the
+ * exact legacy identity, so an upgrade re-adopts its running shell.
+ */
+const LEGACY_TAB_ID = 'terminal-bottom'
+
 /** The persisted `tab.meta` field holding the content-identity generation. */
 const RUN_FIELD = 'terminalRun'
 
 /**
- * The content identity of the bottom terminal at `run`.
+ * The content identity of the bottom terminal at `run`, scoped by `instance`.
  *
  * The host keys its recovery binding on `(sessionId, contentId)`, so a stable
  * value is what makes a page reload adopt the SAME host terminal instead of
- * allocating a new one. A "new terminal" (the run bump) deliberately changes
- * it: the old binding points at a process that is gone — a host restart, or a
- * terminal closed elsewhere — and reusing it would wedge the tab on
- * `missingTerminal` forever.
+ * allocating a new one. Two parts move it:
+ *
+ * - the instance: every bottom-terminal tab mints a unique id, and the tab's
+ *   own id scopes its identity (`dsh-better-sidebar:terminal-bottom:<id>`) —
+ *   two tabs are two independent host terminals. The id rides the persisted
+ *   workbench tree, so it is stable across reloads. Omitting the instance
+ *   (a pre-multi-instance tab) yields the exact legacy identity.
+ * - the generation: a "new terminal" (the run bump) deliberately changes the
+ *   identity: the old binding points at a process that is gone — a host
+ *   restart, or a terminal closed elsewhere — and reusing it would wedge the
+ *   tab on `missingTerminal` forever.
+ *
+ * The instance deliberately rides the TAB ID, not a `meta` field: `updateTab`'s
+ * meta patch replaces `tab.meta` wholesale, so a generation bump would
+ * silently drop any identity field stored there and collapse distinct tabs
+ * onto the shared legacy `#<run>` space.
  * @param run - the content-identity generation (0 for a tab's first terminal).
+ * @param instance - the tab's identity scope ({@link bottomTerminalInstance});
+ *   omit it for the exact pre-multi-instance identity.
  */
-export function bottomTerminalContentId(run: number): string {
-  return run === 0 ? TERMINAL_NS : `${TERMINAL_NS}#${run}`
+export function bottomTerminalContentId(run: number, instance?: string): string {
+  const base = instance === undefined || instance === '' ? TERMINAL_NS : `${TERMINAL_NS}:${instance}`
+  return run === 0 ? base : `${base}#${run}`
 }
 
 /**
@@ -183,9 +205,22 @@ export function bottomTerminalContentId(run: number): string {
  * replacement terminal is minted, and it is namespaced so it can never collide
  * with a host sidebar occurrence key (those are layout tab ids such as `tab1`).
  * @param run - the content-identity generation.
+ * @param instance - the tab's identity scope (see {@link bottomTerminalContentId}).
  */
-export function bottomTerminalKey(run: number): string {
-  return bottomTerminalContentId(run)
+export function bottomTerminalKey(run: number, instance?: string): string {
+  return bottomTerminalContentId(run, instance)
+}
+
+/**
+ * The identity scope of one bottom-terminal tab: its own id. The legacy
+ * single-instance tab (id exactly `terminal-bottom`) reads as `undefined` —
+ * it keeps the byte-for-byte pre-multi-instance identity, so an upgrade does
+ * not orphan its running shell.
+ * @param tab - the bottom-terminal tab.
+ */
+export function bottomTerminalInstance(tab: { id?: unknown }): string | undefined {
+  const id = tab.id
+  return typeof id === 'string' && id !== '' && id !== LEGACY_TAB_ID ? id : undefined
 }
 
 /** The content-identity generation a tab carries (absent/corrupt reads as 0). */
@@ -208,12 +243,14 @@ export function nextTerminalMeta(tab: { meta?: unknown }): Record<string, unknow
  * unmount" contract, and it is what lets a reload reattach — so without this
  * every closed bottom terminal would leave its shell running invisibly.
  * @param ctx - the client context.
- * @param tab - the closing tab (its `meta` names the content identity).
+ * @param tab - the closing tab (its id scopes the identity, its `meta` names
+ *   the content-identity generation).
  * @param sessionId - the tab's session.
  */
-export function closeBottomTerminal(ctx: Context, tab: { meta?: unknown }, sessionId: string): void {
+export function closeBottomTerminal(ctx: Context, tab: { id?: unknown; meta?: unknown }, sessionId: string): void {
   const service = webTerminals(ctx)
   if (service === undefined) return
   const run = terminalRunOf(tab)
-  service.close(sessionId, bottomTerminalKey(run), bottomTerminalContentId(run))
+  const instance = bottomTerminalInstance(tab)
+  service.close(sessionId, bottomTerminalKey(run, instance), bottomTerminalContentId(run, instance))
 }

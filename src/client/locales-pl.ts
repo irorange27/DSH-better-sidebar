@@ -151,6 +151,7 @@ export const pl: Record<string, string> = {
   terminalUnavailable: 'Host nie udostępnia terminala',
   terminalGone: 'Ten terminal już nie istnieje — utwórz nowy',
   terminalNew: 'Nowy terminal',
+  terminalCapped: 'Osiągnięto limit terminali na sesję u hosta — najpierw zamknij nieużywane',
   preview: 'Podgląd',
   toc: 'Spis treści',
   edit: 'Edytuj',

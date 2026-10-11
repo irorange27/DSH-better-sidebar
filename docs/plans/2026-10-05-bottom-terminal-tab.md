@@ -2,6 +2,10 @@
 
 > 状态：已实现（`feat/774-terminal-tab`）。范围刻意收窄为「**底部能开一个终端 + 刷新后按 terminalId 恢复**」，
 > 不含「首次展开自动开终端」（`bottomPanelAutoTerminal`）一类的联动。
+> **追记（多实例）**：上线后用户反馈「开不出第二条底部终端」——原设计把类型钉成 `single: true`，
+> 第二次 `+` 菜单点击只聚焦已有页签（已是激活页签时零反馈）。随后改为多实例：
+> `createTab` 每次铸唯一页签 id，`contentId` 改为按页签派生（`…:<页签 id>#<run>`），
+> 旧单实例页签保留逐字节不变的旧身份，升级不丢正在跑的 shell。见 `tests/terminal-tab.spec.tsx`。
 
 ## 1. 问题
 

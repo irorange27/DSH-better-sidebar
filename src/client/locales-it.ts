@@ -140,6 +140,7 @@ export const it: Record<string, string> = {
   terminalUnavailable: 'L’host non fornisce la funzione terminale',
   terminalGone: 'Quel terminale non esiste più: puoi crearne uno nuovo',
   terminalNew: 'Nuovo terminale',
+  terminalCapped: 'Limite di terminali per sessione dell’host raggiunto: chiudi prima i terminali non usati',
   preview: 'Anteprima',
   toc: 'Indice',
   edit: 'Modifica',

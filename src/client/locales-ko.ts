@@ -141,6 +141,7 @@ export const ko: Record<string, string> = {
   terminalUnavailable: '호스트가 터미널 기능을 제공하지 않습니다',
   terminalGone: '해당 터미널이 더 이상 없습니다 — 새로 만들 수 있습니다',
   terminalNew: '새 터미널',
+  terminalCapped: '호스트의 세션당 터미널 수 상한에 도달했습니다 — 사용하지 않는 터미널을 먼저 닫아 주세요',
   preview: '미리보기',
   toc: '목차',
   edit: '편집',
